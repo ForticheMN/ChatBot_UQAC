@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from transformers import pipeline
 
 # Charger le modèle (ex: BlenderBot ou un autre modèle de chatbot)
-chatbot = pipeline("conversational", model="pathtomodel")
+chatbot = pipeline("conversational", model="facebook/blenderbot-400M-distill")
 
 # Créer une application FastAPI
 app = FastAPI()
