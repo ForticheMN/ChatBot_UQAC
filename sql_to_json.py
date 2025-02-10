@@ -42,7 +42,7 @@ def sqlite_to_json(db_path: str, json_path: str):
                 for row in rows:
                     formatted_data.append({
                         "url": row[url_index],
-                        "text": row[text_index]
+                        "entry_content": row[text_index]
                     })
         
         # Écriture des données dans un fichier JSON sans écraser l'existant
