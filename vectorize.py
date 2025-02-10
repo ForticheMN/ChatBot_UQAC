@@ -26,7 +26,7 @@ jq_schema = ".[]"
 loader = JSONLoader(
     file_path=file_path,
     jq_schema=jq_schema,
-    content_key='text',
+    content_key='entry_content',
     metadata_func=metadata_func)
 
 data = loader.load()
