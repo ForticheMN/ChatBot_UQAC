@@ -31,7 +31,7 @@ loader = JSONLoader(
 
 data = loader.load()
 
-data = data[:5]
+data = data[:5] # Limit the number of documents to 5 for testing purposes
 print(len(data))
 
 text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=10)

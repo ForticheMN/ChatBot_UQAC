@@ -33,10 +33,6 @@ messages = [
     ("human", question + " with the next content : " + retriever[0].page_content),
 ]
 
-# for chunk in llm.stream(messages):
-#     print(chunk.content, end="")
-# print("source : " + retriever[0].metadata["source"])
-
 response = ""
 for chunk in llm.stream(messages):
     response += chunk.content
