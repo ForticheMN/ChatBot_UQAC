@@ -1,25 +1,16 @@
 import requests
 from bs4 import BeautifulSoup
 import json
-from html import unescape
-from typing import Dict, List, Optional
 import re
 import time
 import random
-from html import unescape
-import pandas as pd
-
-
-     
+from typing import Dict, List
 
 headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
 }
 
 def extract_info_in_different_urls(headers):
-    global df_sheets
-    
-    
     # URL à scraper
     url = "https://www.uqac.ca/mgestion/"
     
@@ -32,16 +23,34 @@ def extract_info_in_different_urls(headers):
 
         example_html = soup.prettify()
 
-         # Recherche du div js-store avec data-content
+        # Recherche des liens
         pattern = r'<a[^>]*href="([^"]+)"[^>]*>([^<]+)</a>'
-        # Find all matches
         urls = re.findall(pattern, example_html)
         
         # Remove duplicates while preserving order
         unique_urls = list(dict.fromkeys(urls))
         
         # Create a list of dictionaries
-        url_list = [{"url": url[0], "text": url[1].strip()} for url in unique_urls]
+        url_list = []
+        url_pattern = re.compile(r'https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+')
+        
+        for url in unique_urls:
+            full_url = url[0]
+            link_text = url[1].strip()
+            
+            # Vérifier si l'URL est valide et contient "https://www."
+            if url_pattern.match(full_url) and "https://www." in full_url:
+                # Envoyer une requête GET pour chaque URL
+                response = requests.get(full_url, headers=headers)
+                if response.status_code == 200:
+                    soup = BeautifulSoup(response.content, "html.parser")
+                    entry_content = soup.find("div", class_="entry-content")
+                    if entry_content:
+                        entry_text = entry_content.get_text(strip=True)
+                    else:
+                        entry_text = ""
+                    
+                    url_list.append({"url": full_url, "text": link_text, "entry_content": entry_text})
         
         # Write the list to a JSON file
         with open('UQACmanage_data.json', 'w', encoding='utf-8') as f:
